@@ -1,7 +1,9 @@
 # siki-packager
 
-Siki の配布物（`siki-asar-releases`）から、任意の Siki バージョン / Electron バージョン / プラットフォーム / アーキタイプ で Electron パッケージを生成する CLI です。
+任意の Siki バージョン / Electron バージョン / プラットフォーム / アーキタイプ で Sikiの実行ファイルを生成する CLI です。
 デフォルトで GitHub 上の `https://github.com/romtenma/siki-asar-releases`（manifest.json + Releases assets）を参照します。
+
+すぐに実行できるインストーラが欲しい方は[Sikiのサイト](https://sikiapp.net/)からダウンロードしてください
 
 ## 使い方
 
