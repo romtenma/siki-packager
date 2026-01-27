@@ -1,0 +1,31 @@
+{
+  "name": "siki-packager",
+  "version": "0.1.0",
+  "description": "Build Siki Electron package from siki-asar-releases",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "dist/index.js",
+  "bin": {
+    "siki-packager": "dist/index.js"
+  },
+  "scripts": {
+    "build-script": "tsc -p tsconfig.json",
+    "latest": "node dist/index.js",
+    "beta": "node dist/index.js --app beta"
+  },
+  "dependencies": {
+    "@electron/asar": "^3.3.1",
+    "commander": "^12.1.0",
+    "electron-packager": "^17.1.2",
+    "fs-extra": "^11.2.0",
+    "semver": "^7.6.3",
+    "tar": "^7.4.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.10.2",
+    "@types/semver": "^7.5.8",
+    "electron-packager-languages": "^0.6.0",
+    "typescript": "^5.7.3"
+  }
+}
