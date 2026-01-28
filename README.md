@@ -7,7 +7,7 @@
 
 ## 使い方
 
-前提: Node.js と Git がインストール済み。
+前提: Node.js, npm, Gitがインストール済み。
 
 1. リポジトリを取得
 2. 依存関係をインストール
@@ -36,12 +36,22 @@ node dist --list-apps
 
 - `--app <version>`: Sikiのバージョン（省略時: `latest`）（例: 0.39.3 / 0.39.4-beta.1 / latest / beta）
 - `--electron <version>`: Electron バージョン（省略時: `manifest.json` の `electronVersion`）
+- `--name <name>`: 実行ファイルの名前（省略時: `Siki(Linuxではsiki)`）
 - `--platform <win32|linux|darwin>`（省略時: 現在の環境）
 - `--arch <x64|ia32|arm64>`（省略時: 現在の環境）
 - `--no-asar`: 出力パッケージの asar 化を無効化（省略時: 有効）
 - `--releases <path|url>`: `siki-asar-releases` のパスまたはURL（省略時 `https://github.com/romtenma/siki-asar-releases`）
 - `--list-apps`: ビルド可能な Siki のバージョン一覧を表示して終了
 - `--out <path>`: 出力先ディレクトリ（省略時 `./out`）
+
+## Linux (Ubuntu) での実行について
+
+Ubuntu では Chromium の sandbox が使えず、そのままでは起動できない場合があります。以下のいずれかの対策を行ってください。
+
+- `--no-sandbox` で起動する
+- `chrome-sandbox` の所有者を root にしてパーミッションを 4755 にする
+- `sudo sysctl -w kernel.unprivileged_userns_clone=1`
+- `apparmor.d` へプロファイルを追加
 
 ## 開発メモ
 
