@@ -34,12 +34,17 @@ function parseGitHubRepoUrl(repoUrl: string): { owner: string; repo: string } {
 }
 
 async function downloadToFile(url: string, filePath: string): Promise<boolean> {
-  const res = await fetch(url);
-  if (!res.ok) return false;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return false;
 
-  const buf = Buffer.from(await res.arrayBuffer());
-  await fs.writeFile(filePath, buf);
-  return true;
+    const buf = Buffer.from(await res.arrayBuffer());
+    await fs.writeFile(filePath, buf);
+    return true;
+  } catch (e) {
+    console.error(e)
+    return false
+  }
 }
 
 function resolveRawManifestUrl(params: { owner: string; repo: string }): string {

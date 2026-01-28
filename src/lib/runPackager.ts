@@ -1,7 +1,6 @@
 import path from 'node:path';
 import fs from 'fs-extra';
-import packager from 'electron-packager';
-const setLanguages = require('electron-packager-languages');
+import packager from 'electron-packager'
 
 export async function runPackager(params: {
   dir: string;
@@ -11,15 +10,16 @@ export async function runPackager(params: {
   platform: string;
   arch: string;
   asar: boolean;
+  name?: string;
 }) {
   await fs.ensureDir(params.out);
 
-  const appName = `Siki`;
+  const name = (params.name || 'Siki');
   const out = path.resolve(params.out);
   await packager({
     dir: params.dir,
     out,
-    name: appName,
+    name: params.platform === 'linux' && name === 'Siki' ? 'siki' : name,
     platform: params.platform as any,
     arch: params.arch as any,
     overwrite: true,
@@ -27,6 +27,24 @@ export async function runPackager(params: {
     electronVersion: params.electronVersion,
     prune: false,
     asar: params.asar,
-    afterCopy: [setLanguages(['ja', 'ja-JP'])]
+    afterExtract: [(buildPath, electronVersion, platform, arch, callback) => {
+      removeLanguageFiles(buildPath).then(() => callback()).catch(callback);
+    }]
   });
+}
+
+const removeLanguageFiles = async (buildPath: string) => {
+  const localesPath = path.join(buildPath, "locales");
+  if (!fs.existsSync(localesPath)) return;
+
+  const keep = new Set([
+    "ja.pak",
+    "en-US.pak"
+  ]);
+
+  for (const file of fs.readdirSync(localesPath)) {
+    if (file.endsWith(".pak") && !keep.has(file)) {
+      fs.rmSync(path.join(localesPath, file), { force: true });
+    }
+  }
 }

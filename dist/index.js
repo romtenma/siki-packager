@@ -83,6 +83,7 @@ async function main() {
         .name('siki-packager')
         .description('Build Siki Electron package from siki-asar-releases')
         .option('--app <version>', 'App version (default: latest) e.g. 1.1.0, 0.39.4-beta.1, latest, latest-stable, latest-beta', 'latest')
+        .option('--name <name>', 'Application name (default: Siki)', 'Siki')
         .option('--electron <version>', 'Electron version (default: manifest.json electronVersion)')
         .option('--platform <platform>', 'Target platform (default: current) win32|linux|darwin')
         .option('--arch <arch>', 'Target arch (default: current) x64|ia32|arm64')
@@ -125,6 +126,13 @@ async function main() {
         if (!validatedElectron) {
             throw new Error(`Invalid Electron version: ${electronVersion}`);
         }
+        console.log('Packaging with options:');
+        console.log(`- Siki version: ${resolvedAppVersion}`);
+        console.log(`- Electron version: ${validatedElectron}`);
+        console.log(`- Platform: ${platform}`);
+        console.log(`- Arch: ${arch}`);
+        console.log(`- Output directory: ${outDir}`);
+        console.log(`- ASAR output: ${opts.asar ? 'enabled' : 'disabled'}`);
         const asarInputPath = releasesResolution.source === 'github' && releasesResolution.github
             ? await (0, downloadReleaseAsset_1.downloadReleaseAsset)({
                 owner: releasesResolution.github.owner,
@@ -146,16 +154,10 @@ async function main() {
             arch,
             asarInputPath
         });
-        console.log('Packaging with options:');
-        console.log(`- Siki version: ${resolvedAppVersion}`);
-        console.log(`- Electron version: ${validatedElectron}`);
-        console.log(`- Platform: ${platform}`);
-        console.log(`- Arch: ${arch}`);
-        console.log(`- Output directory: ${outDir}`);
-        console.log(`- ASAR output: ${opts.asar ? 'enabled' : 'disabled'}`);
         await (0, runPackager_1.runPackager)({
             dir: workdir,
             out: outDir,
+            name: opts.name,
             appVersion: resolvedAppVersion,
             electronVersion: validatedElectron,
             platform,

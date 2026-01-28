@@ -14,6 +14,7 @@ import { downloadReleaseAsset } from './lib/downloadReleaseAsset';
 
 type CliOptions = {
   app?: string;
+  name?: string;
   electron?: string;
   platform?: string;
   arch?: string;
@@ -40,7 +41,7 @@ function resolveRequestedAppVersion(requested: string, manifest: Manifest): stri
   const want =
     alias === 'latest' || alias === 'latest-stable'
       ? 'stable'
-      : alias === 'beta' ||alias === 'latest-beta'
+      : alias === 'beta' || alias === 'latest-beta'
         ? 'beta'
         : undefined;
 
@@ -107,6 +108,7 @@ async function main() {
       'App version (default: latest) e.g. 1.1.0, 0.39.4-beta.1, latest, latest-stable, latest-beta',
       'latest'
     )
+    .option('--name <name>', 'Application name (default: Siki)', 'Siki')
     .option('--electron <version>', 'Electron version (default: manifest.json electronVersion)')
     .option('--platform <platform>', 'Target platform (default: current) win32|linux|darwin')
     .option('--arch <arch>', 'Target arch (default: current) x64|ia32|arm64')
@@ -166,6 +168,14 @@ async function main() {
       throw new Error(`Invalid Electron version: ${electronVersion}`);
     }
 
+    console.log('Packaging with options:');
+    console.log(`- Siki version: ${resolvedAppVersion}`);
+    console.log(`- Electron version: ${validatedElectron}`);
+    console.log(`- Platform: ${platform}`);
+    console.log(`- Arch: ${arch}`);
+    console.log(`- Output directory: ${outDir}`);
+    console.log(`- ASAR output: ${opts.asar ? 'enabled' : 'disabled'}`);
+
     const asarInputPath =
       releasesResolution.source === 'github' && releasesResolution.github
         ? await downloadReleaseAsset({
@@ -193,17 +203,11 @@ async function main() {
       asarInputPath
     });
 
-    console.log('Packaging with options:');
-    console.log(`- Siki version: ${resolvedAppVersion}`);
-    console.log(`- Electron version: ${validatedElectron}`);
-    console.log(`- Platform: ${platform}`);
-    console.log(`- Arch: ${arch}`);
-    console.log(`- Output directory: ${outDir}`);
-    console.log(`- ASAR output: ${opts.asar ? 'enabled' : 'disabled'}`);
 
     await runPackager({
       dir: workdir,
       out: outDir,
+      name: opts.name,
       appVersion: resolvedAppVersion,
       electronVersion: validatedElectron,
       platform,

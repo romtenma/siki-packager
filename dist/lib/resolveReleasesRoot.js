@@ -25,12 +25,18 @@ function parseGitHubRepoUrl(repoUrl) {
     return { owner, repo };
 }
 async function downloadToFile(url, filePath) {
-    const res = await fetch(url);
-    if (!res.ok)
+    try {
+        const res = await fetch(url);
+        if (!res.ok)
+            return false;
+        const buf = Buffer.from(await res.arrayBuffer());
+        await fs_extra_1.default.writeFile(filePath, buf);
+        return true;
+    }
+    catch (e) {
+        console.error(e);
         return false;
-    const buf = Buffer.from(await res.arrayBuffer());
-    await fs_extra_1.default.writeFile(filePath, buf);
-    return true;
+    }
 }
 function resolveRawManifestUrl(params) {
     const { owner, repo } = params;
